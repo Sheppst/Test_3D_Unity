@@ -3,7 +3,7 @@ using static CamInstance;
 
 public class GenProperties : MonoBehaviour
 {
-    public CameraType CamType;
+    public Cameratype CamType;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

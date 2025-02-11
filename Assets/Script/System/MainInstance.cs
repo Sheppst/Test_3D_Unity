@@ -13,12 +13,11 @@ public class MainInstance : MonoBehaviour
     [SerializeField] List<Component> Instance; // Pick every instance-script-like in a list and sort them out in awake
     private void Awake()
     {
-        
+        I = this; // Initialization of the Main 
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        I = this; // Initialization of the Main Instance in the scene loaded
     }
 
     // Update is called once per frame

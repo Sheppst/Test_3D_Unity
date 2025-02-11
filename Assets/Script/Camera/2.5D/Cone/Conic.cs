@@ -2,6 +2,7 @@
 using UnityEditor; 
 #endif // End of the compilator operator
 using UnityEngine;
+using static CamInstance;
 
 public class Conic : MonoBehaviour
 {
@@ -9,7 +10,9 @@ public class Conic : MonoBehaviour
     [SerializeField] Transform RE; // Reference of the end of the right wall of detection
     [SerializeField] Transform LO; // Reference of the origin of the left wall of detection
     [SerializeField] Transform LE; // Reference of the end of the left wall of detection
+    [SerializeField] Cameratype CamType; // Assign a type for the camera 
     Transform Character;
+    Transform Rail;
     Ray Left; // Litteraly a ray to do the detection of the left side 
     Ray Right; // Litteraly a ray to do the detection of the right side 
     Ray Front; // Litteraly a ray to do the detection of the front side 
@@ -19,7 +22,7 @@ public class Conic : MonoBehaviour
 
     private void Start()
     {
-        
+        Rail = MainInstance.I.CamM.CameraRefs[CamType].transform;
     }
 
     // Update is called once per frame

@@ -7,10 +7,11 @@ public class CamInstance : MonoBehaviour
     [SerializeField] List<GameObject> Camera;
     public enum Cameratype
     {
-
+        None,
+        Conic,
     }
-    Dictionary<CameraType, GameObject> CameraRefs;
-    public CameraType ActCam;
+    public Dictionary<Cameratype, GameObject> CameraRefs;
+    public Cameratype ActCam;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -23,7 +24,7 @@ public class CamInstance : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach(CameraType obj in CameraRefs.Keys) 
+        foreach(Cameratype obj in CameraRefs.Keys) 
         {
             if (obj == ActCam)
             {
