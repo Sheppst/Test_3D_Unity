@@ -18,7 +18,10 @@ public class Conic : MonoBehaviour
     Ray Front; // Litteraly a ray to do the detection of the front side 
     Ray Back; // Litteraly a ray to do the detection of the back side 
     bool FirstTouch; // Verify if the target touch the raycast for the first time, if true, set the firstPosition
+    float TouchDistance; // Verify the distance between the firstTouch of the target on the raycast, if actDist < TouchDist, Block the movment and the linked properties
+    float SmoothTime;
     Vector3 FirstPositon; // Keep an eye on the firstposition where the target touch 
+    Vector3 vel = Vector3.zero;
 
     private void Start()
     {
@@ -28,6 +31,7 @@ public class Conic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        SmoothTime = MainInstance.I.CamM.SmthTm;
         Character = MainInstance.I.ActChar; // Link the reference 
         float LimL = Vector3.Distance(LO.position, LE.position); // Récupère la distance entre le point A et B // Distance(A,B);
         float LimR = Vector3.Distance(RO.position, RE.position); // Récupère la distance entre le point A et B // Distance(A,B);
@@ -49,30 +53,31 @@ public class Conic : MonoBehaviour
         {
             Debug.DrawRay(LO.position, TargLeft, Color.green); // Dessine un ray des même position que le Ray qui à été envoyé de couleur verte
             Debug.Log("Touché L"); // Renvoie un message de console que tel limite à été touché
-            CamMovement();
+            CamMovement(true, false);
         }
         else if (Physics.Raycast(Right, LimR, MainInstance.I.PMask)) // Si le Raycast touche le character
         {
             Debug.DrawRay(RO.position, TargRight, Color.green); // Dessine un ray des même position que le Ray qui à été envoyé de couleur verte
             Debug.Log("Touché R"); // Renvoie un message de console que tel limite à été touché
-            CamMovement();
+            CamMovement(true, true);
         }
         else if (Physics.Raycast(Front, LimF, MainInstance.I.PMask)) // Si le Raycast touche le character
         {
             Debug.DrawRay(LE.position, TargFront, Color.green); // Dessine un ray des même position que le Ray qui à été envoyé de couleur verte
             Debug.Log("Touché F"); // Renvoie un message de console que tel limite à été touché
-            CamMovement();
+            CamMovement(false, true);
         }
         else if (Physics.Raycast(Back, LimB, MainInstance.I.PMask)) // Si le Raycast touche le character
         {
             Debug.DrawRay(RO.position, TargBack, Color.green); // Dessine un ray des même position que le Ray qui à été envoyé de couleur verte
             Debug.Log("Touché B"); // Renvoie un message de console que tel limite à été touché
-            CamMovement();
+            CamMovement(false, false);
         }
-        else if (FirstTouch && FirstPositon != Vector3.zero) // if the target touch a raycast and the follow position is not set to default (default can be change if Vector3.zero is to light) 
+        else if (FirstTouch && FirstPositon != Vector3.zero && TouchDistance > Vector3.Distance(Character.position, FirstPositon)) // if the target touch a raycast and the follow position is not set to default (default can be change if Vector3.zero is to light) 
         {
             FirstTouch = false; // Reset the authorization
             FirstPositon = Vector3.zero; // Reset the follower point
+            TouchDistance = 0; // Reset the Distance Checker
         }
     }
     
@@ -91,14 +96,42 @@ public class Conic : MonoBehaviour
         #endif
     }
 
-    void CamMovement()
+    void CamMovement(bool IsX, bool Pos) 
     {
         if (!FirstTouch) 
         {
             FirstTouch = true;
             FirstPositon = Character.position;
         }
-
+        if (TouchDistance <= Vector3.Distance(FirstPositon,Character.position)) // Verify if the distance is higher than the variable which keep an eye on it 
+        {// if yes
+            TouchDistance = Vector3.Distance(FirstPositon, Character.position); // Set the variable to the actual distance
+            if (IsX && Pos) // if the detection is on x-axis
+            {
+                //Vector3 targ = Rail.up + Rail.forward + Character.right; // Créer un vecteur de déplacement
+                Vector3 targ = Vector3.right * Character.position.x; // Créer un vecteur de déplacement
+                //Rail.Translate(targ); // Effectue une transition vers le vecteur en question
+                Rail.position = Vector3.SmoothDamp(Rail.position,targ, ref vel, SmoothTime, Mathf.Infinity, Time.deltaTime); // Effectue une transition vers le vecteur en question
+            }
+            else if (IsX) 
+            {
+                Vector3 targ = Vector3.right  * Character.position.x;// Créer un vecteur de déplacement
+                //Rail.Translate(targ); // Effectue une transition vers le vecteur en question
+                Rail.position = Vector3.SmoothDamp(Rail.position, targ, ref vel, SmoothTime, Mathf.Infinity, Time.deltaTime);
+            }
+            else if (Pos)
+            {
+                Vector3 targ = Vector3.forward  * Character.position.z;// Créer un vecteur de déplacement
+                //Rail.Translate(targ); // Effectue une transition vers le vecteur en question
+                Rail.position = Vector3.SmoothDamp(Rail.position, targ, ref vel, SmoothTime, Mathf.Infinity, Time.deltaTime);
+            }
+            else
+            {
+                Vector3 targ = Vector3.forward  * Character.position.z;// Créer un vecteur de déplacement
+                //Rail.Translate(targ); // Effectue une transition vers le vecteur en question
+                Rail.position = Vector3.SmoothDamp(Rail.position, targ, ref vel, SmoothTime, Mathf.Infinity, Time.deltaTime);
+            }
+        }
     }
 
     //private float BoundRay(float y)

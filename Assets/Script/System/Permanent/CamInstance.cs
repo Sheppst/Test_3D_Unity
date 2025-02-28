@@ -10,8 +10,9 @@ public class CamInstance : MonoBehaviour
         None,
         Conic,
     }
-    public Dictionary<Cameratype, GameObject> CameraRefs;
+    public Dictionary<Cameratype, GameObject> CameraRefs = new();
     public Cameratype ActCam;
+    public float SmthTm;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
