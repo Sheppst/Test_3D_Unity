@@ -8,7 +8,7 @@ public class Sliding : MonoBehaviour
     public Transform orientation;
     public Collider Body;
     private Rigidbody rb;
-    private PlayerMovementAdvanced pm;
+    private PlayerMovementAdvanced PM;
 
     [Header("Sliding")]
     public float maxSlideTime;
@@ -25,7 +25,7 @@ public class Sliding : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        pm = GetComponent<PlayerMovementAdvanced>();
+        PM = GetComponent<PlayerMovementAdvanced>();
     }
 
     private void Update()
@@ -36,19 +36,19 @@ public class Sliding : MonoBehaviour
         if (Input.GetKeyDown(slideKey) && (horizontalInput != 0 || verticalInput != 0))
             StartSlide();
 
-        if (Input.GetKeyUp(slideKey) && pm.sliding)
+        if (Input.GetKeyUp(slideKey) && PM.sliding)
             StopSlide();
     }
 
     private void FixedUpdate()
     {
-        if (pm.sliding)
+        if (PM.sliding)
             SlidingMovement();
     }
 
     private void StartSlide()
     {
-        pm.sliding = true;
+        PM.sliding = true;
 
         slideTimer = maxSlideTime;
     }
@@ -58,7 +58,7 @@ public class Sliding : MonoBehaviour
         Vector3 inputDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         // sliding normal
-        if(!pm.OnSlope() || rb.linearVelocity.y > -0.1f)
+        if(!PM.OnSlope() || rb.linearVelocity.y > -0.1f)
         {
             rb.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
 
@@ -68,7 +68,7 @@ public class Sliding : MonoBehaviour
         // sliding down a slope
         else
         {
-            rb.AddForce(pm.GetSlopeMoveDirection(inputDirection) * slideForce, ForceMode.Force);
+            rb.AddForce(PM.GetSlopeMoveDirection(inputDirection) * slideForce, ForceMode.Force);
         }
 
         if (slideTimer <= 0)
@@ -77,6 +77,6 @@ public class Sliding : MonoBehaviour
 
     private void StopSlide()
     {
-        pm.sliding = false;
+        PM.sliding = false;
     }
 }

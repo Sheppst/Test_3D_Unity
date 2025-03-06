@@ -45,7 +45,23 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
-    
+
+    [Header("Dashing")]
+    public DashLogic DashDeterminer;
+    public DashPhysic DashPropulsion;
+    [System.Serializable]
+    public class DashLogic
+    {
+        public int e;
+    }
+    [System.Serializable]
+    public class DashPhysic
+    {
+        public float x;
+    }
+    [HideInInspector] public bool Dash;
+
+    [Space(5)]
 
     public Transform orientation;
 
@@ -64,6 +80,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         sprinting,
         crouching,
         sliding,
+        dash,
         air
     }
 
@@ -138,6 +155,9 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     private void StateHandler()
     {
+        // Mode - Dash 
+
+
         // Mode - Sliding
         if (sliding)
         {
@@ -151,7 +171,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         }
 
         // Mode - Crouching
-        else if (Input.GetKey(crouchKey))
+        else if (Input.GetKey(crouchKey) || CheckRoof.In)
         {
             state = MovementState.crouching;
             desiredMoveSpeed = crouchSpeed;
